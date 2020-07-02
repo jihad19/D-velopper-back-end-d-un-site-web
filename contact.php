@@ -1,4 +1,61 @@
 
+<?php
+        $msg = "";
+        if (isset($_POST['contact'])) {
+            $fname = $_POST['fname'];
+            $email = $_POST['email'];
+            $message = $_POST['message'];
+
+            if (strlen($fname)<3){
+
+                $msg = "<div class='alert alert-danger'>Entaer a valid name</div>";
+    
+            }else if (filter_var($email, FILTER_VALIDATE_EMAIL) === false){
+
+                $msg = "<div class='alert alert-danger'>Enter a valid email</div>";
+    
+            }else if (strlen($message)<10 ){
+
+                $msg = "<div class='alert alert-danger'>your message length must be more than 10 characters</div>";
+    
+            }else{
+
+                require 'PHPMailer/PHPMailerAutoload.php';
+
+                    $mail = new PHPMailer;
+
+                    //Server settings
+                    $mail->isSMTP();                                      // Set mailer to use SMTP
+                    $mail->Host = 'smtp.gmail.com;';  // Specify main and backup SMTP servers
+                    $mail->SMTPAuth = true;                               // Enable SMTP authentication
+                    $mail->Username = 'testwpsites2@gmail.com';                 // SMTP username
+                    $mail->Password = 'wxcvbn,;';                           // SMTP password
+                    $mail->SMTPSecure = 'tls';                            // Enable TLS encryption, `ssl` also accepted
+                    $mail->Port = 587;                                    // TCP port to connect to
+                  
+                  
+                    //Recipients
+                    $mail->setFrom($email);
+                    $mail->addAddress('testwpsites2@gmail.com');     // Add a recipient
+                 
+
+                    // Content
+                    $mail->isHTML(true);                                  // Set email format to HTML
+                    $mail->Subject = 'Test PHPMailer';
+                    $mail->Body    = 'transmitter : <b>' .$fname. '</b>' .'<br>'.$message;
+                   
+
+                    if(!$mail->send()) {
+                        echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+
+                    } else {
+                        $msg = "<div class='alert alert-success'>Message has been sent</div>";
+                    }
+            }
+
+            
+        }
+    ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -36,78 +93,33 @@
 
     <div class="brand">The Perfect Cup</div>
     <div class="address-bar">3481 Melrose Place | Beverly Hills, CA 90210 | 123.456.7890</div>
+    <nav class="navbar navbar-default" role="navigation">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li>
+                        <a href="index.phpphp">Home</a>
+                    </li>
+                    <li>
+                        <a href="about.php">About</a>
+                    </li>
+                    <li>
+                        <a href="blog.php">Blog</a>
+                    </li>
+                    <li>
+                        <a href="contact.php">Contact</a>
+                    </li>
+                    <li>
+                        <a href="logout.php">LOGOUT</a>
+                    </li>
+                </ul>
+            </div>
+            </div>
+    </nav>
 
     <!-- Navigation -->
-    <?php include 'nav.php' ?>
-    <?php
-        
-
-        $alert = "";
-        if (isset($_POST['contact'])) {
-            $fname = $_POST['fname'];
-            $email = $_POST['email'];
-            $message = $_POST['message'];
-            $subject = $_POST['subject'];
-            $mailTo = "jihad.karamane91@gmail.com";
-            $headers = "From :". $email;
-            $txt = "you have received an e-mail from ".$fname." ".$email.".\n\n".$message;
-
-            if (strlen($fname)<2){
-
-                $alert = "<div class='alert alert-danger'>your first name is too short</div>";
-    
-            }else if (strlen($subject)<2){
-
-                $alert = "<div class='alert alert-danger'>your subject is too short</div>";
-    
-            }else if (!filter_var($email, FILTER_VALIDATE_EMAIL)){
-
-                $alert = "<div class='alert alert-danger'>your email format is invalid</div>";
-    
-            }else if ($message == ""){
-
-                $alert = "<div class='alert alert-danger'>message field should not be empty</div>";
-    
-            }else{
-
-                require 'PHPMailer/PHPMailerAutoload.php';
-
-                    $mail = new PHPMailer;
-
-                    //$mail->SMTPDebug = 3;                               // Enable verbose debug output
-
-                    $mail->isSMTP();                                      // Set mailer to use SMTP
-                    $mail->Host = 'smtp.gmail.com;';  // Specify main and backup SMTP servers
-                    $mail->SMTPAuth = true;                               // Enable SMTP authentication
-                    $mail->Username = 'jihad.karamane91@gmail.com';                 // SMTP username
-                    $mail->Password = 'alilmonoor123';                           // SMTP password
-                    $mail->SMTPSecure = 'tls';                            // Enable TLS encryption, `ssl` also accepted
-                    $mail->Port = 587;                                    // TCP port to connect to
-
-                    $mail->setFrom($email);
-                    $mail->addAddress('oum.ja3far@gmail.com');     // Add a recipient
-                 
-
-                    
-                    $mail->isHTML(true);                                  // Set email format to HTML
-
-                    $mail->Subject = $subject;
-                    $mail->Body    = $txt;
-                   
-
-                    if(!$mail->send()) {
-                        echo 'Message could not be sent.';
-                        echo 'Mailer Error: ' . $mail->ErrorInfo;
-                    } else {
-                        $alert = "<div class='alert alert-success'>your message has been sent successfully</div>";
-                    }
-            }
-
-            
-        }
-    
-    
-    ?>
     <div class="container">
 
         <div class="row">
@@ -132,7 +144,7 @@
                     </p>
                     <p>Address:
                         <strong>3481 Melrose Place
-                            <br>Beverly Hills, CA 90210 <?php echo $alert; ?></strong>
+                            <br>Beverly Hills, CA 90210</strong>
                     </p>
                 </div>
                 <div class="clearfix"></div>
@@ -148,7 +160,7 @@
                     </h2>
                     
                     <hr>
-                    <div id="add_err2"></div>
+                    <div id="add_err2"><?php echo $msg ?></div>
                     <form role="form" action ="contact.php" method = "post">
                         <div class="row">
                             <div class="form-group col-lg-4">
@@ -158,10 +170,6 @@
                             <div class="form-group col-lg-4">
                                 <label>Email Address</label>
                                 <input type="email" id="email" name="email" maxlength="28" class="form-control">
-                            </div>
-                            <div class="form-group col-lg-4">
-                                <label>Subject</label>
-                                <input type="text" id="subject" name="subject" maxlength="25" class="form-control">
                             </div>
                             <div class="clearfix"></div>
                             <div class="form-group col-lg-12">

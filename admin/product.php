@@ -32,7 +32,6 @@ img{
                         <th>Description</th>
                         <th>Information</th>
                         <th>Price</th>
-                        <th>Date</th>
                         <th>Edit</th>
                         <th>Delete</th>
                     </tr>
@@ -54,8 +53,6 @@ img{
                                 $product_desc = $row['product_desc'];
                                 $product_info = $row['product_info'];
                                 $product_price = $row['product_price'];
-                                $product_date = $row['product_date'];
-
 
                                 echo "<tr>";
                                 echo "<td>$product_id</td>";
@@ -64,9 +61,8 @@ img{
                                 echo "<td>$product_desc</td>";
                                 echo "<td>$product_info</td>";
                                 echo "<td>$product_price</td>";
-                                echo "<td>$product_date</td>";
                                 echo "<td> <a href='edit_product.php?edit=$product_id'>Edit</a></td>";
-                                echo "<td><a href='products.php?delete=$product_id'>Delete</a></td>";
+                                echo "<td><a href='product.php?delete=$product_id'>Delete</a></td>";
                                 echo "</tr>";
                             }
 
@@ -75,9 +71,7 @@ img{
 
                                 $delete_query = "DELETE FROM product WHERE product_id = $deleted_product_id";
                                 $deleted_product_query = mysqli_query($conn,$delete_query);
-
-                                header('Location: product.php');
-                            }
+                           }
 
                         ?>
 
